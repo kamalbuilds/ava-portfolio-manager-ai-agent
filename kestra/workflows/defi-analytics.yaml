@@ -28,23 +28,35 @@ tasks:
 
   - id: analyze_yields
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      protocols: "{{ inputs.protocols }}"
+    env:
+      PROTOCOLS: "{{ inputs.protocols }}"
+    script: |
+      import os
+      import json
+      # Your yield analysis logic here
     outputFiles:
       - yield_data.json
 
   - id: analyze_volume
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      protocols: "{{ inputs.protocols }}"
+    env:
+      PROTOCOLS: "{{ inputs.protocols }}"
+    script: |
+      import os
+      import json
+      # Your volume analysis logic here
     outputFiles:
       - volume_data.json
 
   - id: generate_report
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      tvl_data: "{{ outputs.fetch_tvl_data.files['tvl_data.json'] }}"
-      yield_data: "{{ outputs.analyze_yields.files['yield_data.json'] }}"
-      volume_data: "{{ outputs.analyze_volume.files['volume_data.json'] }}"
+    env:
+      TVL_DATA: "{{ outputs.fetch_tvl_data.files['tvl_data.json'] }}"
+      YIELD_DATA: "{{ outputs.analyze_yields.files['yield_data.json'] }}"
+      VOLUME_DATA: "{{ outputs.analyze_volume.files['volume_data.json'] }}"
+    script: |
+      import os
+      import json
+      # Your report generation logic here
     outputFiles:
       - analytics_report.json

@@ -31,23 +31,35 @@ tasks:
 
   - id: estimate_fees
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      bridge_path: "{{ outputs.validate_bridge_path.files['bridge_path.json'] }}"
+    env:
+      BRIDGE_PATH: "{{ outputs.validate_bridge_path.files['bridge_path.json'] }}"
+    script: |
+      import os
+      import json
+      # Your fee estimation logic here
     outputFiles:
       - fee_estimate.json
 
   - id: initiate_bridge
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      bridge_path: "{{ outputs.validate_bridge_path.files['bridge_path.json'] }}"
-      fee_estimate: "{{ outputs.estimate_fees.files['fee_estimate.json'] }}"
+    env:
+      BRIDGE_PATH: "{{ outputs.validate_bridge_path.files['bridge_path.json'] }}"
+      FEE_ESTIMATE: "{{ outputs.estimate_fees.files['fee_estimate.json'] }}"
+    script: |
+      import os
+      import json
+      # Your bridge initiation logic here
     outputFiles:
       - bridge_tx.json
 
   - id: monitor_bridge
     type: io.kestra.plugin.scripts.python.Script
-    inputs:
-      bridge_tx: "{{ outputs.initiate_bridge.files['bridge_tx.json'] }}"
+    env:
+      BRIDGE_TX: "{{ outputs.initiate_bridge.files['bridge_tx.json'] }}"
+    script: |
+      import os
+      import json
+      # Your bridge monitoring logic here
     retry:
       maxAttempt: 10
       interval: PT1M

@@ -10,6 +10,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "dependencies": {
+    "@agoric/orchestration": "^0.2.0-u18.2",
     "@avalabs/avacloud-sdk": "^0.8.0",
     "@babel/runtime": "^7.26.0",
     "@brian-ai/langchain": "^1.0.4",

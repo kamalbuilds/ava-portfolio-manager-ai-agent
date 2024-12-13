@@ -74,7 +74,7 @@ This makes the agents more robust and capable of handling complex DeFi operation
 
 ## 🏗 Architecture
 
-<img width="1322" alt="Screenshot 2024-12-01 at 11 15 43 AM" src="https://github.com/user-attachments/assets/30b63286-fd80-49ef-be7f-a0de1bd965a7">
+<img alt="Screenshot 2024-12-01 at 11 15 43 AM" src="https://github.com/user-attachments/assets/30b63286-fd80-49ef-be7f-a0de1bd965a7">
 
 
 ## 🛠 Technology Stack

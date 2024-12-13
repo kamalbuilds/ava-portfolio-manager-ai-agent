@@ -14,6 +14,7 @@ import { DynamicStructuredTool } from "langchain/tools";
 import { z } from "zod";
 import { FunctorService } from '../services/functorService.ts';
 import { KestraService } from '../services/kestraService';
+import { OrchestrationAgent } from './orchestrationAgent';
 
 // Initialize Kestra service
 const kestraService = new KestraService();
@@ -173,15 +174,6 @@ export const createSpecializedAgents = async (baseOptions: BrianAgentOptions): P
         instructions: "You are a liquidity pool specialist. Help users find and analyze liquidity pools.",
     });
 
-    // Portfolio Management Agent with Kestra orchestration
-    const portfolioAgent = await createAgent({
-        ...baseOptions,
-        tools: [...kestraTools, coingeckoTool, defiLlamaToolkit.getTVLTool],
-        instructions: `You are a portfolio management specialist with workflow orchestration capabilities.
-            You can orchestrate complex portfolio operations using Kestra workflows.
-            Help users optimize their portfolio allocation.`,
-    });
-
     // DeFiLlama Analysis Agent
     const defiLlamaAgent = await createAgent({
         ...baseOptions,
@@ -193,6 +185,45 @@ export const createSpecializedAgents = async (baseOptions: BrianAgentOptions): P
             - Monitor DEX volumes and trading activity
             - Compare different protocols and chains
             Always provide data-driven insights and recommendations.`,
+    });
+
+    // Add Orchestration Agent
+    const orchestrationAgent = new OrchestrationAgent();
+    await orchestrationAgent.initialize([
+        'avalanche',
+        'ethereum',
+        'base',
+        'mode'
+    ]);
+
+    // Update Portfolio Agent with orchestration capabilities
+    const portfolioAgent = await createAgent({
+        ...baseOptions,
+        tools: [
+            ...kestraTools,
+            coingeckoTool,
+            defiLlamaToolkit.getTVLTool,
+            // Add new orchestration tools
+            new DynamicStructuredTool({
+                name: "execute_cross_chain_rebalance",
+                description: "Execute portfolio rebalancing across multiple chains",
+                schema: z.object({
+                    operations: z.array(z.object({
+                        sourceChain: z.string(),
+                        targetChain: z.string(),
+                        amount: z.string(),
+                        denom: z.string(),
+                        targetAddress: z.string()
+                    }))
+                }),
+                func: async ({ operations }) => {
+                    return await orchestrationAgent.executePortfolioRebalance(operations);
+                }
+            })
+        ],
+        instructions: `You are a portfolio management specialist with cross-chain orchestration capabilities.
+            You can orchestrate complex portfolio operations across multiple chains.
+            Help users optimize their portfolio allocation while maintaining efficiency and security.`
     });
 
     return [
@@ -219,6 +250,12 @@ export const createSpecializedAgents = async (baseOptions: BrianAgentOptions): P
             name: 'DeFi Analytics',
             description: 'Provides comprehensive DeFi market analysis using DeFiLlama data',
             agent: defiLlamaAgent
+        },
+        {
+            id: 'orchestration',
+            name: 'Orchestration Manager',
+            description: 'Manages cross-chain portfolio operations',
+            agent: orchestrationAgent
         }
     ];
 };
