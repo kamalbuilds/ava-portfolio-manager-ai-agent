@@ -1,7 +1,7 @@
 # 🤖 Ava the Portfolio Manager AI Agents
 
 
-> Multiple specialized autonomous AI agents with powerful tools work together to analyze, recommend, and execute optimal DeFi strategies while maintaining user-defined risk parameters and portfolio goals currently live on Avalanche , Mode , Base, powered by Brian AI and LangChain
+> Multiple specialized autonomous AI agents with powerful tools work together to analyze, recommend, and execute optimal DeFi strategies while maintaining user-defined risk parameters and portfolio goals currently live on Avalanche , Mode , Starknet powered by Brian AI and LangChain
 
 
 - risk parameters and portfolio balance
